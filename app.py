@@ -67,7 +67,7 @@ def main():
     with st.sidebar:
         st.sidebar.write("## Upload Image")
         with st.form(key = "image_form" ):
-            image_input = st.file_uploader("", type=["png", "jpg"], accept_multiple_files=False)
+            image_input = st.file_uploader("", type=["png", "jpg", "jpeg"], accept_multiple_files=False)
             submit_upload = st.form_submit_button("Submit")
             st.session_state.submitted_upload = submit_upload
             

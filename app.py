@@ -32,7 +32,7 @@ except FileExistsError:
 
 # load the artifacts in
 ANALYZER = EmbeddingCalculator(os.path.join(ARTIFACT_DIR, "model_pets.pt"),  37)     # 37 classes for our dataset
-INDEX = faiss.read_index(os.path.join(ARTIFACT_DIR, "model_pets.pt"),"pet_faiss_index")
+INDEX = faiss.read_index(os.path.join(ARTIFACT_DIR, "pet_faiss_index"))
 
 
 

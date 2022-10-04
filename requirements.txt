@@ -1,4 +1,4 @@
 torch>1.9,<1.11
-torchvision
+torchvision==0.12.0
 faiss-cpu
 pillow

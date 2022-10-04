@@ -13,28 +13,31 @@ import io
 DIRECTORY = os.path.abspath(os.path.dirname(__file__))
 ARTIFACT_DIR = os.path.join(DIRECTORY, 'S3artifacts')
 
-
+@st.cache
 def fetch_data(url, data_dir, download=False):
     if download:
         response = requests.get(url, stream=True)
         file = tarfile.open(fileobj=response.raw, mode="r|gz")
         file.extractall(path=data_dir)
 
-# make directory for artifacts if one isn't made
-try:
-    os.mkdir(ARTIFACT_DIR)
-    # grab model and index artifacts
-    pets_url = 'https://exp-instance-retrieval.s3.amazonaws.com/stem-goes-red/artifacts/artifacts.tar.gz'
-    fetch_data(pets_url, ARTIFACT_DIR, download = True)
-except FileExistsError:
-    pass
+@st.cache(allow_output_mutation=True)
+def load_artifacts(url):
+    # make directory for artifacts if one isn't made
+    try:
+        os.mkdir(ARTIFACT_DIR)
+        # grab model and index artifacts
+        fetch_data(url, ARTIFACT_DIR, download = True)
+    except FileExistsError:
+        pass
 
+    # load the artifacts in
+    analyzer = EmbeddingCalculator(os.path.join(ARTIFACT_DIR, "model_pets.pt"),  37)     # 37 classes for our dataset
+    index = faiss.read_index(os.path.join(ARTIFACT_DIR, "pet_faiss_index"))
 
-# load the artifacts in
-ANALYZER = EmbeddingCalculator(os.path.join(ARTIFACT_DIR, "model_pets.pt"),  37)     # 37 classes for our dataset
-INDEX = faiss.read_index(os.path.join(ARTIFACT_DIR, "pet_faiss_index"))
+    return analyzer, index
 
-
+pets_url = 'https://exp-instance-retrieval.s3.amazonaws.com/stem-goes-red/artifacts/artifacts.tar.gz'
+ANALYZER, INDEX = load_artifacts(pets_url)
 
 # search for the top_k most similar images
 def preprocess_input(target_img_bytes, top_k = 12):

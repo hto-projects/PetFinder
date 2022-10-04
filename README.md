@@ -4,11 +4,15 @@ Upload pictures of cats or dogs and the program will find the most similar image
 Please note that not all cat or dog breeds are represented, but you will still get a result.
 
 ## How to use this app:
-Check out the dpeloyed version!
+Check out the [deployed version](https://hto-projects-petfinder-app-wmv1hg.streamlitapp.com/)!
 
 OR
 * Clone the repo 
-* Then run
-``` 
-streamlit run app.py
-```
+* Install the requirements
+  ```
+  pip install -r requirements.txt
+  ```
+* Then run: 
+    ``` 
+    streamlit run app.py
+    ```

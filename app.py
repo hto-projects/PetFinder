@@ -31,8 +31,8 @@ except FileExistsError:
 
 
 # load the artifacts in
-ANALYZER = EmbeddingCalculator(DIRECTORY+"\\S3artifacts\\model_pets.pt",  37)     # 37 classes for our dataset
-INDEX = faiss.read_index(DIRECTORY+ "\\S3artifacts\\pet_faiss_index")
+ANALYZER = EmbeddingCalculator(os.path.join(ARTIFACT_DIR, "model_pets.pt"),  37)     # 37 classes for our dataset
+INDEX = faiss.read_index(os.path.join(ARTIFACT_DIR, "model_pets.pt"),"pet_faiss_index")
 
 
 

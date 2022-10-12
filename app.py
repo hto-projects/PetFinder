@@ -67,45 +67,47 @@ def main():
 
     st.header(":dog: Find Your Pet :cat:")
     st.write("""Upload a picture of your furry friend and we'll search for cats or dogs just like them.""")
-    with st.sidebar:
-        st.sidebar.write("## Upload Image")
-        with st.form(key = "image_form" ):
-            image_input = st.file_uploader("", type=["png", "jpg", "jpeg"], accept_multiple_files=False)
-            submit_upload = st.form_submit_button("Submit")
-            st.session_state.submitted_upload = submit_upload
-            
+    # with st.sidebar:
+    #     st.sidebar.write("## Upload Image")
+    with st.form(key = "image_form" ):
+        image_input = st.file_uploader("", type=["png", "jpg", "jpeg"], accept_multiple_files=False)
+        submit_upload = st.form_submit_button("Submit & Search")
+        st.session_state.submitted_upload = submit_upload
+    
+    
+    n_cols = 4
 
     if submit_upload: 
         if image_input is not None:   
-            st.sidebar.success("Upload Successful ✅")
             st.session_state.image_input = image_input
             st.write("### You Uploaded:")
             st.image(Image.open(st.session_state.image_input))
-        else:
-            st.sidebar.error("You didn't upload a picture")
-    
-    run_search = st.button("Find Similar Images!")
-    st.session_state.run_search = run_search
 
-    n_cols = 4
-    if run_search and image_input:
-        st.image(Image.open(st.session_state.image_input))
-        encoded_img = base64.b64encode(image_input.getvalue()).decode('utf-8')
-        st.session_state.results = preprocess_input(encoded_img, 12)
-        # images = [Image.open(item) for item in st.session_state.results['best_paths']]
-        # get from S3
-        images = [Image.open(requests.get(item, stream = True).raw) for item in st.session_state.results['best_paths']]
-        images_resized = [im.resize((224,224)) for im in images]
-        st.header("Pets like yours!")
-        n_rows = 1 + len(images_resized) // int(n_cols)
-        rows = [st.container() for _ in range(n_rows)]
-        cols_per_row = [r.columns(n_cols) for r in rows]
-        cols = [column for row in cols_per_row for column in row]
+            with st.spinner("⌛️ &nbsp;&nbsp; Searching..."):
+                encoded_img = base64.b64encode(image_input.getvalue()).decode('utf-8')
+                st.session_state.results = preprocess_input(encoded_img, 12)
+                # images = [Image.open(item) for item in st.session_state.results['best_paths']]
+                # get from S3
+                images = [Image.open(requests.get(item, stream = True).raw) for item in st.session_state.results['best_paths']]
+                images_resized = [im.resize((224,224)) for im in images]
+                st.header("Pets like yours!")
+                n_rows = 1 + len(images_resized) // int(n_cols)
+                rows = [st.container() for _ in range(n_rows)]
+                cols_per_row = [r.columns(n_cols) for r in rows]
+                cols = [column for row in cols_per_row for column in row]
 
-        
-        for image_index, cat_image in enumerate(images_resized):
-            cols[image_index].image(cat_image)
+            
+                for image_index, cat_image in enumerate(images_resized):
+                    cols[image_index].image(cat_image)
         # st.image(images_resized, use_column_width=True)
+        else:
+            st.error("You didn't upload a picture")
+    
+    # run_search = st.button("Find Similar Images!")
+    # st.session_state.run_search = run_search
+
+
+
 
 
 

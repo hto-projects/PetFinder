@@ -65,7 +65,7 @@ def main():
     set_state_if_absent("results", None)
     set_state_if_absent("image_input", None)
 
-    st.header(":dog: Find Your Pet :cat:")
+    st.header(":dog: PetMatchAI :cat:")
     st.write("""Upload a picture of your furry friend and we'll search for cats or dogs just like them.""")
     # with st.sidebar:
     #     st.sidebar.write("## Upload Image")
